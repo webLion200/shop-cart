@@ -16,7 +16,6 @@ window.onload = function() {
     }
     var cartTable = document.getElementById('cartTable');
     var trs = cartTable.children[1].rows;
-    var trsLen = trs.length;
     var checkInputs = document.getElementsByClassName('check');
     var selectedTotal = document.getElementById('selectedTotal');
     var priceTotal = document.getElementById('priceTotal');
@@ -31,16 +30,16 @@ window.onload = function() {
         var selected = 0;
         var totalPrice = 0;
         var HTMLdiv = '';
-        for(var i = 0; i < trsLen; i ++) {
-                if(trs[i].getElementsByTagName('input')[0].checked) {
-                    selected += parseInt(trs[i].getElementsByTagName('input')[1].value);
-                    totalPrice += parseFloat(trs[i].cells[4].innerHTML);
-                    HTMLdiv += "<div><img src="+trs[i].getElementsByTagName('img')[0].src+"><span class='del' index="+i+">取消选择</span></div>"
-                }
-                selectedTotal.innerHTML = selected;
-                priceTotal.innerHTML = totalPrice.toFixed(2);
-                selectedViewList.innerHTML = HTMLdiv;
+        for(var i = 0; i < trs.length; i ++) {
+            if(trs[i].getElementsByTagName('input')[0].checked) {
+                selected += parseInt(trs[i].getElementsByTagName('input')[1].value);
+                totalPrice += parseFloat(trs[i].cells[4].innerHTML);
+                HTMLdiv += "<div><img src="+trs[i].getElementsByTagName('img')[0].src+"><span class='del' index="+i+">取消选择</span></div>"
+            }
         }   
+        selectedTotal.innerHTML = selected;
+        priceTotal.innerHTML = totalPrice.toFixed(2);
+        selectedViewList.innerHTML = HTMLdiv;
         if(selectedTotal.innerHTML == 0) {
             foot.className = 'foot';
         } 
@@ -88,7 +87,7 @@ window.onload = function() {
         subtotal.innerHTML = (price * count).toFixed(2);
     }
 
-    for(var i = 0; i < trsLen; i ++) {
+    for(var i = 0; i < trs.length; i ++) {
         trs[i].onclick = function (e) {
             var e = e || window.event;
             var els = e.srcElement;
@@ -125,15 +124,18 @@ window.onload = function() {
 
     deleteAll.onclick = function () {
         if(selectedTotal.innerHTML != 0) {
+            var trsLen = trs.length;
             var con = confirm("Are u sure?");
-            for(var i = 0; i < trsLen; i ++) {
-                if(trs[i].getElementsByTagName('input')[0].checked) {
-                    trs[i].parentNode.removeChild(trs[i]);
-                    i --;
-                    trsLen --;  
+            if (con) {
+                for(var i = 0; i < trsLen; i ++) {
+                    if(trs[i].getElementsByTagName('input')[0].checked) {
+                        trs[i].parentNode.removeChild(trs[i]);
+                        i --;
+                        trsLen --;  
+                    }
                 }
             }
-            
+            getTotal();
         }
     }
 }
